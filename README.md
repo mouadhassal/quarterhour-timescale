@@ -42,7 +42,7 @@ python data/fetch.py && python run_case.py
 > You didn't do anything wrong, but two defaults don't fit your volume.
 >
 > 1. **Chunk interval.** At about 400 rows a day, 7-day chunks are tiny. Use 90 days or more (`set_chunk_time_interval`). New chunks pick it up; existing ones can be left as they are or migrated.
-> 2. **Duplicate index.** Your `(zone, ts DESC)` index already serves time-range queries per zone. Create hypertables with `create_default_indexes => false`, or drop the default `ts` index on new chunks.
+> 2. **Duplicate index.** Your `(zone, ts DESC)` index already serves time-range queries per zone. If you never filter by time alone across all zones, create hypertables with `create_default_indexes => false` or drop the default `ts` index; if you do, keep it and accept the size.
 > 3. **Dashboard.** Build an hourly continuous aggregate with a refresh policy and point the dashboard at it. That cuts the work per request from 8,832 rows to 2,208.
 > 4. **Storage.** Add a compression policy segmented by `zone` for chunks older than a month: about 4× smaller here.
 >
